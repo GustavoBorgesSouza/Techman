@@ -28,7 +28,7 @@ namespace Patrimonio.Repositories
         public Equipamento Cadastrar(Equipamento equipamento)
         {
             ctx.Equipamentos.Add(equipamento);
-            ctx.SaveChangesAsync();
+            ctx.SaveChanges();
 
             return equipamento;
         }

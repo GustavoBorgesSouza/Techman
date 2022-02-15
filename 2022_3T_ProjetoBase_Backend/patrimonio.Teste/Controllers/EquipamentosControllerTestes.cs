@@ -60,6 +60,41 @@ namespace patrimonio.Teste.Controllers
         [Fact]
         public void DeveRetornarUmEquipamentoPorId()
         {
+            var lista = new List<Equipamento>();
+
+            var equip1 = new Equipamento();
+            equip1.Id = 1;
+            equip1.NomePatrimonio = "Agenda";
+            equip1.Imagem = "";
+            equip1.Descricao = "É uma agenda, de fato";
+            equip1.Ativo = true;
+            equip1.DataCadastro = DateTime.Now;
+
+            var equip2 = new Equipamento();
+            equip2.Id = 2;
+            equip2.NomePatrimonio = "Garrafa";
+            equip2.Imagem = "";
+            equip2.Descricao = "É uma garrafa, de fato";
+            equip2.Ativo = false;
+            equip2.DataCadastro = DateTime.Now;
+
+            lista.Add(equip1);
+            lista.Add(equip2);
+
+
+            var fakeRepository = new Mock<IEquipamentoRepository>();
+            fakeRepository.Setup(e => e.BuscarPorID(equip1.Id))
+                .Returns(equip1);
+
+            var controller = new EquipamentosController(fakeRepository.Object);
+
+            //Procedimento / Act
+
+            var resultado = controller.BuscarPorId(equip1.Id);
+
+            //Resultado esperado / Assert
+
+            Assert.IsType<OkObjectResult>(resultado);
 
         }
 

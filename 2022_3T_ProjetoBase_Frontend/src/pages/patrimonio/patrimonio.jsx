@@ -56,8 +56,7 @@ export const Patrimonio = () => {
 
     const Listar = () => {
       axios.get('http://localhost:5000/api/Equipamentos')
-      .then(resposta => {
-        setProdutos(resposta.data);
+      .then(resposta => {     setProdutos(resposta.data);
       })
       .catch(erro => console.log(erro))
     }
@@ -111,8 +110,8 @@ export const Patrimonio = () => {
               <input
                 className="input__login" 
                 type="text" 
-                name="nomePatrimonio" 
-                id="nomePatrimonio" 
+                name="codigoPatrimonio" 
+                id="codigoPatrimonio" 
                 placeholder="Código do Patrimonio"
                 value={descricao}
                 onChange={(e) => setDescricao(e.target.value)}

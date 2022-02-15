@@ -45,7 +45,7 @@ namespace Patrimonio.Controllers
             return Ok(equipamentoBuscado);
         }
 
-        // PUT: api/Equipamentos/5
+        //PUT: api/Equipamentos/5
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         //[HttpPut("{id}")]
         //public async Task<IActionResult> PutEquipamento(int id, Equipamento equipamento)
@@ -76,60 +76,52 @@ namespace Patrimonio.Controllers
         //    return NoContent();
         //}
 
-        //// POST: api/Equipamentos
+        // POST: api/Equipamentos
         //// To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        //[HttpPost]
-        //public async Task<ActionResult<Equipamento>> PostEquipamento([FromForm] Equipamento equipamento, IFormFile arquivo)
-        //{
+        [HttpPost]
+        public async Task<ActionResult<Equipamento>> PostEquipamento([FromForm] Equipamento equipamento, IFormFile arquivo)
+        {
 
-        //    #region Upload da Imagem com extensões permitidas apenas
-        //        string[] extensoesPermitidas = { "jpg", "png", "jpeg", "gif" };
-        //        string uploadResultado = Upload.UploadFile(arquivo, extensoesPermitidas);
+            #region Upload da Imagem com extensões permitidas apenas
+            string[] extensoesPermitidas = { "jpg", "png", "jpeg", "gif" };
+            string uploadResultado = Upload.UploadFile(arquivo, extensoesPermitidas);
 
-        //        if (uploadResultado == "")
-        //        {
-        //            return BadRequest("Arquivo não encontrado");
-        //        }
+            if (uploadResultado == "")
+            {
+                return BadRequest("Arquivo não encontrado");
+            }
 
-        //        if (uploadResultado == "Extensão não permitida")
-        //        {
-        //            return BadRequest("Extensão de arquivo não permitida");
-        //        }
+            if (uploadResultado == "Extensão não permitida")
+            {
+                return BadRequest("Extensão de arquivo não permitida");
+            }
 
-        //        equipamento.Imagem = uploadResultado; 
-        //    #endregion
+            equipamento.Imagem = uploadResultado;
+            #endregion
 
-        //    // Pegando o horário do sistema
-        //    equipamento.DataCadastro = DateTime.Now;
+            // Pegando o horário do sistema
+            equipamento.DataCadastro = DateTime.Now;
 
-        //    _context.Equipamentos.Add(equipamento);
-        //    await _context.SaveChangesAsync();
+            _equipamentoRepository.Cadastrar(equipamento);
+            return Created("Equipamento", equipamento);
+        }
 
-        //    return Created("Equipamento", equipamento);
-        //}
+        // DELETE: api/Equipamentos/5
+        [HttpDelete("{id}")]
+        public async Task<IActionResult> DeleteEquipamento(int id)
+        {
+            var equipamento = _equipamentoRepository.BuscarPorID(id);
+            if (equipamento == null)
+            {
+                return NotFound();
+            }
 
-        //// DELETE: api/Equipamentos/5
-        //[HttpDelete("{id}")]
-        //public async Task<IActionResult> DeleteEquipamento(int id)
-        //{
-        //    var equipamento = await _context.Equipamentos.FindAsync(id);
-        //    if (equipamento == null)
-        //    {
-        //        return NotFound();
-        //    }
+            _equipamentoRepository.Excluir(equipamento);
 
-        //    _context.Equipamentos.Remove(equipamento);
-        //    await _context.SaveChangesAsync();
+            // Removendo Arquivo do servidor
+            Upload.RemoverArquivo(equipamento.Imagem);
 
-        //    // Removendo Arquivo do servidor
-        //    Upload.RemoverArquivo(equipamento.Imagem);
-
-        //    return NoContent();
-        //}
-
-        //private bool EquipamentoExists(int id)
-        //{
-        //    return _context.Equipamentos.Any(e => e.Id == id);
-        //}
+            return NoContent();
+        }
     }
 }
